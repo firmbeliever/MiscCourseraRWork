@@ -1,0 +1,40 @@
+---
+title: "Week 4 Pitch Presentation"
+date: "March 8, 2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Welcome
+
+Welcome to my Shiny app pitch.  The app can be found at <https://firmbeliever.shinyapps.io/week4app/>.
+
+## Overview
+
+The app uses data from the 'cars' dataset from R.  The dataset contains 50 observations of the speed of
+a car (in MPH) and its stopping distance (in feet).  The app shows the plotted dataset, and a linear
+ model is shown by a blue line.  
+ 
+ The user can use a slider to pick a speed between 5 and 40 MPH, and the app 
+ will predict the stopping distance.  This prediction will be listed below the slider, and it 
+ will also be plotted by a red dot on the blue line in the graph.
+
+## Example
+
+Below is an example showing the model that is fit for the dataset, as well as a sample prediction
+with a new speed of 40 MPH.
+
+```{r cars, echo = TRUE, comment=""}
+model <- lm(dist ~ speed, data = cars)
+predict(model, newdata = data.frame(speed = 40))[[1]]
+```
+
+## Summary
+
+This app could be useful for educating users on the need to maintain proper distance,
+particularly when traveling at higher speeds.
+
+

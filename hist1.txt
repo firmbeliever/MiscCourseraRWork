@@ -1,0 +1,512 @@
+summary(fit1)
+exp(fit1$coef)
+InsectSprays
+fit4 <- glm(count ~ factor(spray), poisson, InsectSprays)
+summary(fit4)
+exp(fit4$coefficients)
+x <- -5:5
+y <- c(5.12, 3.93, 2.67, 1.87, 0.52, 0.08, 0.93, 2.05, 2.54, 3.87, 4.97)
+plot(x,y)
+shuttle$auto <- 1 * (shuttle$use == "auto")
+shuttle$headwind <- 1 * (shuttle$wind == "head")
+shuttle$tailwind <- 1 * (shuttle$wind == "tail")
+fit3a <- glm(auto ~ headwind, data = shuttle, family = binomial)
+fit3b <- glm(auto ~ tailwind, data = shuttle, family = binomial)
+exp(coef(fit3a))
+exp(coef(fit3b))
+fit3c <- glm(I(1 - auto) ~ headwind, data = shuttle, family = binomial)
+exp(coef(fit3c))
+shuttle$noauto <- 1 * (shuttle$use == "noauto")
+fit3d <- glm(noauto ~ headwind, data = shuttle, family = binomial)
+exp(coef(fit3a))
+exp(coef(fit3d))
+z <- (x > 0) * x
+fit6 <- lm(y ~ x + z)
+coef(fit6)
+fit4 <- glm(count ~ relevel(spray, "B"), data = InsectSprays, family = poisson)
+exp(coef(fit4))[2]
+exp(coef(fit4))
+?mtcars
+test <- lm(mpg ~ factor(cyl),data = mtcars)
+summary(test)
+mean(mtcars$mpg)
+mean(subset(mtcars, am = 0)$mpg)
+mean(subset(mtcars, am == 0)$mpg)
+data("mtcars")
+head(mtcars, 3)
+fit1 <- lm(mpg ~ factor(am), data = mtcars)
+summary(fit1)$coef
+confint(fit1)
+mean(subset(mtcars, am == 1)$mpg)
+fit2 <- lm(mpg ~ factor(am) + wt + disp, data = mtcars)
+summary(fit2)$coef
+confint(fit2)
+anova(fit1, fit2)
+par(mfrow = c(2,2))
+plot(fit2)
+?plot
+dev.off()
+plot(density(resid(fit2)))
+qqnorm(resid(fit2))
+qqline(resid(fit2))
+plot(density(resid(fit2)))
+plot(density(resid(fit1)))
+median(1:6)
+median(c(1,2,3,4,10,12))
+median(c(1,2,3,6,10,12))
+library(AppliedPredictiveModeling)
+install.packages('AppliedPredictiveModeling')
+library(AppliedPredictiveModeling)
+data(concrete)
+library(caret)
+install.packages('caret')
+library(caret)
+set.seed(1000)
+inTrain = createDataPartition(mixtures$CompressiveStrength, p = 3/4)[[1]]
+training = mixtures[ inTrain,]
+testing = mixtures[-inTrain,]
+head(training)
+featurePlot(x = training[,-"CompressiveStrength"], y = training$CompressiveStrength, plot = "pairs")
+featurePlot(x = training[,c("Cement", "BlastFurnaceSlag", "FlyAsh", "Water", "Superplasticizer", "CoarseAggregate", "FineAggregate", "Age")], y = training$CompressiveStrength, plot = "pairs")
+?cut2
+library(Hmisc)
+?cut2
+cutStrength  <- cut2(training$CompressiveStrength, g=3)
+table(cutStrength)
+head(training)
+featurePlot(x = training[, 1:8], y = cutStrength, plot = "pairs", auto.key = list(columns=3))
+?featurePlot
+featurePlot(x = training[, 1:8], y = cutStrength, plot = "scatter", auto.key = list(columns=3))
+featurePlot(x = training[, 1:8], y = cutStrength, plot = "scatter")
+featurePlot(x = training[, 1:8], y = cutStrength, plot = "scatter", layout = (c2,4))
+featurePlot(x = training[, 1:8], y = cutStrength, plot = "scatter", layout = c(2,4))
+dev.off()
+featurePlot(x = training[, 1:8], y = cutStrength, plot = "scatter", layout = c(2,4))
+featurePlot(x = training[, 1:8], y = cutStrength, plot = "pairs", auto.key = list(columns=3))
+featurePlot(x = training[, 1:3], y = cutStrength, plot = "pairs", auto.key = list(columns=3))
+featurePlot(x = training[, 1:3], y = cutStrength, plot = "pairs")
+dev.off()
+featurePlot(x = training[, 1:3], y = cutStrength, plot = "pairs")
+plot(cutStrength, pch=19)
+dev.off()
+plot(training$CompressiveStrength, pch=19)
+plot(training$CompressiveStrength, pch=19, col = cut2(training$Cement, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$BlastFurnaceSlag, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$FlyAsh, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$Water, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$Superplasticizer, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$CoarseAggregate, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$FineAggregate, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$Age, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$FlyAsh, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$Cement, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$BlastFurnaceSlag, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$Water, g=3))
+plot(training$CompressiveStrength, pch=19, col = cut2(training$Superplasticizer, g=3))
+range(training$Superplasticizer)
+hist(training$Superplasticizer)
+set.seed(3433)
+data(AlzheimerDisease)
+adData = data.frame(diagnosis,predictors)
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+training = adData[ inTrain,]
+testing = adData[-inTrain,]
+str(training)
+head(training[,58:69])
+?preProcess
+preProcess(training[,58:69], thresh = 0.8)
+a <- preProcess(training[,58:69], thresh = 0.8)
+a
+q5 <- training[,c(1,58,59,60,61,62,63,64,65,66,67,68,69)]
+q5Training <- training[,c(1,58,59,60,61,62,63,64,65,66,67,68,69)]
+rm(q5)
+trainPC <- predict(a, training[, 58:69])
+modelFit2 <- train(q5Training$diagnosis ~ ., method = "glm", data = trainPC)
+head(trainPC)
+modelFit1 <- train(q5Training$diagnosis~., method = "glm", data = q5Training)
+modelFit1 <- train(q5Training$diagnosis ~ ., method = "glm", data = q5Training)
+library(e1071)
+install.packages('caret', dependencies = TRUE)
+install.packages("caret", dependencies = TRUE)
+modelFit2 <- train(q5Training$diagnosis ~ ., method = "glm", data = trainPC)
+library(caret)
+modelFit2 <- train(q5Training$diagnosis ~ ., method = "glm", data = trainPC)
+modelFit1 <- train(q5Training$diagnosis ~ ., method = "glm", data = q5Training)
+head(q5training)
+head(q5Training)
+?train
+modelFit1 <- train(diagnosis ~ ., method = "glm", data = q5Training)
+q5Testing <- testing[,c(1,58,59,60,61,62,63,64,65,66,67,68,69)]
+head(q5Testing)
+confusionMatrix(q5Testing$diagnosis, predict(modelFit1, q5Testing))
+modelFit2 <- train(q5Training$diagnosis ~ ., method = "glm", data = trainPC)
+modelFit2 <- train(q5Training$diagnosis ~ trainPC, method = "glm")
+library(AppliedPredictiveModeling)
+data(segmentationOriginal)
+library(caret)
+inTrain1 = createDataPartition(segmentationOriginal$Case, p = 3/4)[[1]]
+train1 <- segmentationOriginal[inTrain1,]
+test1 <- segmentationOriginal[-inTrain1,]
+set.seed(125)
+head(segmentationOriginal)
+head(train1)
+fit1 <- train(Case~.,method = "rpart", data = segmentationOriginal)
+print(fit1$finalModel)
+set.seed(125)
+fit1 <- train(Case~.,method = "rpart", data = segmentationOriginal)
+print(fit1$finalModel)
+?segmentationOriginal
+?AppliedPredictiveModeling
+install.packages('AppliedPredictiveModeling')
+install.packages("AppliedPredictiveModeling")
+library(AppliedPredictiveModeling)
+?AppliedPredictiveModeling
+?`AppliedPredictiveModeling-package`
+rm(segmentationOriginal)
+data("segmentationOriginal")
+head(segmentationOriginal)
+set.seed(125)
+fit1 <- train(Class~.,method = "rpart", data = segmentationOriginal)
+library(caret)
+set.seed(125)
+fit1 <- train(Class~.,method = "rpart", data = segmentationOriginal)
+print(fit1$finalModel)
+library(pgmm)
+install.packages('pgmm')
+library(pgmm)
+data(olive)
+head(olive)
+olive = olive[,-1]
+head(olive)
+fit2 <- train(Area~.,method = "rpart", data = olive)
+newdata = as.data.frame(t(colMeans(olive)))
+?tree
+library(caret)
+install.packages('ElemStatLearn')
+library(caret)
+library(ElemStatLearn)
+?tree
+??tree
+predict(fit2, newdata = newdata)
+data(SAheart)
+set.seed(8484)
+train = sample(1:dim(SAheart)[1],size=dim(SAheart)[1]/2,replace=F)
+trainSA = SAheart[train,]
+testSA = SAheart[-train,]
+set.seed(13234)
+head(train)
+head(trainSA)
+?lm
+fit4 <- glm(chd ~ age + alcohol + obesity + tobacco + typea + ldl, data = SAheart, family = "binomial")
+missClass = function(values,prediction){sum(((prediction > 0.5)*1) != values)/length(values)}
+missClass(testSA$chd, predict(fit4, testSA))
+missClass(trainSA$chd, predict(fit4, trainSA))
+data(vowel.train)
+data(vowel.test)
+head(vowel.test)
+head(vowel.test, n = 30)
+vowel.test$y <- as.factor(vowel.test$y)
+head(vowel.test, n = 30)
+str(vowel.test)
+vowel.train$y <- as.factor(vowel.train$y)
+set.seed(33833)
+fit5 <- train(y~., data = vowel.train, method = "rf", prox = TRUE)
+?varImp
+varImp(fit5)
+?randomForest
+fit5a <- randomForest(y~., data = vowel.train)
+varImp(fit5a)
+library(ElemStatLearn)
+data(vowel.train)
+data(vowel.test)
+vowel.test$y <- as.factor(vowel.test$y)
+vowel.train$y <- as.factor(vowel.train$y)
+set.seed(33833)
+library(caret)
+fitgbm <- train(y~., method = "gbm", data = vowel.train)
+fitgbm <- train(y~., method = "gbm", data = vowel.train, verbose = FALSE)
+summary(fitgbm)
+predictgbm <- predict(fitgbm, vowel.test)
+confusionMatrix(predictgbm, vowel.test$y)
+fitrf <- train(y~., method = "rf", data = vowel.train, verbose = FALSE)
+predictrf <- predict(fitrf, vowel.test)
+confusionMatrix(predictrf, vowel.test$y)
+predictgbm == predictrf
+predDF <- data.frame(predictgbm, predictrf, y=vowel.test$y)
+combFit <- train(y~., method = "gam", data = predDF)
+combPred <- predict(combFit, predDF)
+confusionMatrix(combPred, vowel.test$y)
+library(caret)
+library(gbm)
+set.seed(3433)
+library(AppliedPredictiveModeling)
+data(AlzheimerDisease)
+adData = data.frame(diagnosis,predictors)
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+training = adData[ inTrain,]
+testing = adData[-inTrain,]
+predictgbm == predictrf
+sum(predictgbm == predictrf)
+idx  <- predictgbm == predictrf
+idx
+predGbmSub <- predictgbm[idx,]
+predictgbm
+predGbmSub <- predictgbm[idx]
+predGbmSub
+testSub <- vowel.test[idx]
+testSub <- vowel.test[idx,]
+testSub
+dim(testSub)
+confusionMatrix(predGbmSub, testSub)
+confusionMatrix(predGbmSub, testSub$y)
+set.seed(62433)
+fit2rf <- train(diagnosis~., method = "rf", data = training)
+head(training)
+fit2gbm <- train(diagnosis~., method = "gbm", data = training)
+fit2lda <- train(diagnosis~., method = "lda", data = training)
+pred2rf <- predict(fit2rf, testing)
+predgbm <- predict(fit2gbm, testing)
+predlda <- predict(fit2lda, testing)
+confusionMatrix(pred2rf, testing)
+confusionMatrix(pred2rf, testing$diagnosis)
+confusionMatrix(pred2gbm, testing$diagnosis)
+confusionMatrix(predgbm, testing$diagnosis)
+confusionMatrix(predlda, testing$diagnosis)
+predDF2 <- data.frame(pred2rf, predgbm, predlda, diagnosis = testing$diagnosis)
+combFit2 <- train(diagnosis~., method = "rf", data = predDF2, verbose = FALSE)
+combPred2 <- predict(combFit2, predDF2)
+confusionMatrix(combPred2, predDF2)
+confusionMatrix(combPred2, predDF2$diagnosis)
+set.seed(3523)
+library(AppliedPredictiveModeling)
+data(concrete)
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+training = concrete[ inTrain,]
+testing = concrete[-inTrain,]
+set.seed(233)
+fit3 <- train(CompressiveStrength~., method="lasso", data = training)
+?plot.enet
+plot.enet(fit3)
+plot.enet(fit3, xvar = "penalty")
+fit3
+plot.enet(fit3$finalModel)
+plot.enet(fit3$finalModel, xvar = "penalty")
+plot.enet(fit3$finalModel, xvar = "penalty", use.color = TRUE)
+library(lubridate)
+setwd("~/DataScienceCoursera")
+dat = read.csv("gaData.csv")
+training = dat[year(dat$date) < 2012,]
+testing = dat[(year(dat$date)) > 2011,]
+tstrain = ts(training$visitsTumblr)
+?bats
+install.packages('forecast')
+library(forecast)
+?bats
+head(training)
+?ts
+head(tstrain)
+fit4 <- bats(tstrain)
+forecast(fit4)
+dim(training)
+confusionMatrix(forecast(fit4), testing$visitsTumblr)
+confusionMatrix(forecast(fit4), testing)
+?confusionMatrix
+head(testing)
+?forecasta
+?forecast
+dim(testing)
+fcast <- forecast(fit4, 235)
+dim(fcast)
+fcast
+tail(testing)
+fcast$upper
+fcast$level
+fcast$mean
+fcast$x
+fcast$lower
+fcast$lower[,2]
+fcast$upper[,2]
+head(fcast)
+fcast$lower[,2]
+fcast$upper[,2]
+fcast
+df4 <- data.frame(fcast$lower[,2], fcast$upper[,2], testing$visitsTumblr)
+dim(df4)
+df4$testing.visitsTumblr <= df4$fcast.upper...2. & df4$testing.visitsTumblr >= df4$fcast.lower...2.
+sum(df4$testing.visitsTumblr <= df4$fcast.upper...2. & df4$testing.visitsTumblr >= df4$fcast.lower...2.)
+226/235
+set.seed(3523)
+library(AppliedPredictiveModeling)
+data(concrete)
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+training = concrete[ inTrain,]
+testing = concrete[-inTrain,]
+set.seed(325)
+library(e1071)
+?svm
+set.seed(325)
+fit5 <- svm(CompressiveStrength~., data = training)
+pred5 <- predict(fit5, testing)
+head(pred5)
+sqrt(mean((pred5 - testing$CompressiveStrength)^2))
+training <- read.csv("pml-training.csv")
+testing <- read.csv("pml-testing.csv")
+dim(training)
+dim(testing)
+str(training)
+View(training)
+View(testing)
+sort(names(testing))
+sort(names(training))
+?in
+1 in c(),,
+1 in c(1,2,3)
+!(names(testing) %in% names(training))
+(names(testing) %in% names(training))
+names(training) %in% names(testing)
+names(training)
+names(testing)
+View(training)
+head(testing)
+head(training)
+unique(training$classe)
+?complete.cases
+View(testing)
+complete.cases(testing$user_name)
+?lapply
+complete.cases(testing$kurtosis_roll_belt)
+source('~/.active-rstudio-document')
+cmpCase(testing$user_name)
+source('~/.active-rstudio-document')
+cmpCase(testing$user_name)
+colnames(testing)[colSums(is.na(testing)) > 0]
+colnames(testing)[colSums(complete.cases(testing)) > 0]
+?colSums
+?complete.cases
+complete.cases(testing)
+?colwise
+colwise(complete.cases, testing)
+colwise(complete.cases)(testing)
+anyNA
+colnames(testing)[colSums(is.na(testing)) > 0]
+colnames(testing)[colSums(!is.na(testing)) = 0]
+colnames(testing)[colSums(!is.na(testing)) == 0]
+colnames(training)[colSums(!is.na(training)) == 0]
+colnames(training)[colSums(!is.null(training)) == 0]
+dim(testing)[2]
+colnames(testing)
+source('~/.active-rstudio-document')
+cmpCase2(testing)
+source('~/.active-rstudio-document')
+cmpCase2(testing)
+?print
+source('~/.active-rstudio-document')
+cmpCase2(testing)
+source('~/.active-rstudio-document')
+source('~/.active-rstudio-document')
+cmpCase2(testing)
+source('~/.active-rstudio-document')
+cmpCase2(testing)
+cmpCase2(training)
+names(training)
+idxs <- c(8,9,10,11,37,38,39,40,41,42,43,44,45,46,47,48,49,60,61,62,63,64,65,66,67,68,84,85,86,102,113,114,115,116,117,118,119,120,121,122,123,124,140,151,152,153,154,155,156,157,158,159,160)
+test <- testing[,idxs]
+View(test)
+building <- read.csv("pml-training.csv")
+testing <- read.csv("pml-testing.csv")
+idxs <- c(8,9,10,11,37,38,39,40,41,42,43,44,45,46,47,48,49,60,61,62,63,64,65,66,67,68,84,85,86,102,113,114,115,116,117,118,119,120,121,122,123,124,140,151,152,153,154,155,156,157,158,159,160)
+building <- building[,idxs]
+testing <- testing[,idxs]
+dim(building)
+dim(testing)
+## carve a validation set out of the training set
+inTrain <- createDataPartition(y = building$classe, p = 0.7, list = FALSE)
+training <- building[inTrain,]
+validation <- building[-inTrain,]
+building <- read.csv("pml-training.csv")
+testing <- read.csv("pml-testing.csv")
+idxs <- c(8,9,10,11,37,38,39,40,41,42,43,44,45,46,47,48,49,60,61,62,63,64,65,66,67,68,84,85,86,102,113,114,115,116,117,118,119,120,121,122,123,124,140,151,152,153,154,155,156,157,158,159,160)
+building <- building[,idxs]
+testing <- testing[,idxs]
+dim(building)
+dim(testing)
+## carve a validation set out of the training set
+inTrain <- createDataPartition(y = building$classe, p = 0.7, list = FALSE)
+training <- building[inTrain,]
+validation <- building[-inTrain,]
+building <- read.csv("pml-training.csv")
+testing <- read.csv("pml-testing.csv")
+idxs <- c(8,9,10,11,37,38,39,40,41,42,43,44,45,46,47,48,49,60,61,62,63,64,65,66,67,68,84,85,86,102,113,114,115,116,117,118,119,120,121,122,123,124,140,151,152,153,154,155,156,157,158,159,160)
+building <- building[,idxs]
+testing <- testing[,idxs]
+dim(building)
+dim(testing)
+## carve a validation set out of the training set
+inTrain <- createDataPartition(y = building$classe, p = 0.7, list = FALSE)
+training <- building[inTrain,]
+validation <- building[-inTrain,]
+building <- read.csv("pml-training.csv")
+testing <- read.csv("pml-testing.csv")
+idxs <- c(8,9,10,11,37,38,39,40,41,42,43,44,45,46,47,48,49,60,61,62,63,64,65,66,67,68,84,85,86,102,113,114,115,116,117,118,119,120,121,122,123,124,140,151,152,153,154,155,156,157,158,159,160)
+building <- building[,idxs]
+testing <- testing[,idxs]
+dim(building)
+dim(testing)
+## carve a validation set out of the training set
+## set seed for reproducibility
+set.seed(123)
+inTrain <- createDataPartition(y = building$classe, p = 0.7, list = FALSE)
+training <- building[inTrain,]
+validation <- building[-inTrain,]
+building <- read.csv("pml-training.csv")
+testing <- read.csv("pml-testing.csv")
+idxs <- c(8,9,10,11,37,38,39,40,41,42,43,44,45,46,47,48,49,60,61,62,63,64,65,66,67,68,84,85,86,102,113,114,115,116,117,118,119,120,121,122,123,124,140,151,152,153,154,155,156,157,158,159,160)
+building <- building[,idxs]
+testing <- testing[,idxs]
+dim(building)
+dim(testing)
+## carve a validation set out of the training set
+## set seed for reproducibility
+set.seed(123)
+inTrain <- createDataPartition(y = building$classe, p = 0.7, list = FALSE)
+training <- building[inTrain,]
+validation <- building[-inTrain,]
+building <- read.csv("pml-training.csv")
+testing <- read.csv("pml-testing.csv")
+idxs <- c(8,9,10,11,37,38,39,40,41,42,43,44,45,46,47,48,49,60,61,62,63,64,65,66,67,68,84,85,86,102,113,114,115,116,117,118,119,120,121,122,123,124,140,151,152,153,154,155,156,157,158,159,160)
+building <- building[,idxs]
+testing <- testing[,idxs]
+dim(building)
+dim(testing)
+## carve a validation set out of the training set
+## set seed for reproducibility
+set.seed(123)
+inTrain <- createDataPartition(y = building$classe, p = 0.7, list = FALSE)
+training <- building[inTrain,]
+validation <- building[-inTrain,]
+fit <- train(classe~., method = "rf", data = training, verbose = FALSE)
+?preProcess
+preProc <- preProcess(training[,-60], method="pca", pcaComp = 10)
+preProc
+trainPC <- predict(preProc, training[,-60])
+dim(idxs)
+length(idxs)
+names(training)
+preProc <- preProcess(training[,-53], method="pca", pcaComp = 10)
+trainPC <- predict(preProc, training[,-53])
+modelFit <- train(training$classe~., method="rf", data = trainPC)
+preProc <- preProcess(training[,-53], method="pca", pcaComp = 3)
+trainPC <- predict(preProc, training[,-53])
+modelFit <- train(training$classe~., method="rf", data = trainPC)
+modelFit <- train(training$classe~., method="glm", data = trainPC)
+modelFit <- train(training$classe~., method="rf", data = trainPC)
+rm(trainPC)
+rm(preProc)
+preProc <- preProcess(training[,-53], method="pca", pcaComp = 5)
+trainPC <- predict(preProc, training[,-53])
+modelFit <- train(training$classe~., method="rf", data=trainPC, verbose = FALSE)
+modelFit <- train(training$classe~., method="glm", data=trainPC)
+warnings()
+modelFit <- train(training$classe~., method="rf", data=trainPC, verbose = FALSE)
+head(trainPC)
+savehistory("~/DataScienceCoursera/hist1.txt")
