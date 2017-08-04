@@ -1,0 +1,63 @@
+---
+title: "Weight Lifting Exercise Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+### Summary
+
+For this proejct, we are analyzing data collected from 6 subjects while performing specific exercises.
+The subjects wore sensors that detected their motion, and each observation was classified according
+to how correctly the exercise was being performed.  The goal is to then be able to predict whether an
+exercise is being performed correctly (and if not, what is incorrect in its execution) based on these
+same data points from test subjects.
+
+### Data Analysis
+Being that there are 160 columns in the dataset, my first step was to determine which would be best to
+include in the analysis.  I found that there were 100 predictors that had no data for the vast majority
+of observations, so I excluded these predictors.  I also excluded the columns with metadata
+(observation ID, username, etc.), as those should not be used in the prediction model.  This left me
+with 52 predictors and the output ('classe').
+
+```{r}
+library(caret)
+building <- read.csv("pml-training.csv")
+testing <- read.csv("pml-testing.csv")
+idxs <- c(8,9,10,11,37,38,39,40,41,42,43,44,45,46,47,48,49,60,61,62,63,64,65,66,67,68,84,85,86,102,113,114,115,116,117,118,119,120,121,122,123,124,140,151,152,153,154,155,156,157,158,159,160)
+building <- building[,idxs]
+testing <- testing[,idxs]
+## carve a validation set out of the training set
+## set seed for reproducibility
+set.seed(123)
+inTrain <- createDataPartition(y = building$classe, p = 0.7, list = FALSE)
+training <- building[inTrain,]
+validation <- building[-inTrain,]
+```
+
+As this still resulted in a large number of predictors, I decided to use principle component analysis
+to create 5 components to use for modeling.  A model was then fit using the random forest method
+based on these 5 components and the output variable, classe.
+
+```{r}
+preProc <- preProcess(training[,-53], method="pca", pcaComp = 5)
+trainPC <- predict(preProc, training[,-53])
+df <- data.frame(trainPC, training$classe)
+modelFit <- train(training.classe~., method="rf", data=df, verbose = FALSE)
+```
+
+Once the model was created, I then used the validation set to test, and created a confution matrix
+between the actual results in the validation set and the predicted results from our model.
+
+```{r}
+testPC <- predict(preProc, validation[, -53])
+confusionMatrix(validation$classe, predict(modelFit, testPC))
+```
+
+This results in an accuracy of 84.04% on the validation set. This is the estimate for the out-of-sample
+error rate, as the validation set was not used during the training of the model.
+
+
+

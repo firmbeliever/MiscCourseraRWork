@@ -1,0 +1,18 @@
+---
+title: "My Map"
+date: "March 3, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+My map of Budapest
+
+```{r echo=FALSE}
+suppressPackageStartupMessages(library(leaflet))
+mymap <- leaflet() %>% addTiles %>% addMarkers(lng = 19.0402, lat = 47.4979)
+mymap
+```
+

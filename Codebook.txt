@@ -1,0 +1,111 @@
+Study Design
+
+The raw data for this project came from the UCI Machine Learning Repository.  Please see the following links for information about the data and to download the zip if desired.
+http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+The relevant raw data is split between 6 different files:
+subject_train.txt	training set subject label data
+X_train.txt			training set measurement data
+y_train.txt			training set activity label data
+subject_test.txt	test set subject label data
+X_test.txt			test set measurement data
+y_test.txt			test set activity label data
+
+This project combined the data into one data set, and the requirement was to then extract only the mean and standard deviation measurements.  Then the mean of each selected
+measurement was calculated for each subject and activity.
+
+For my design, the requirement of including only mean and standard deviation measurements meant that I only included those features with "mean()" or "std()" in the original feature name.
+- Those measurements labeled as meanFreq() (mean frequency) were not included, as they are not a direct mean measurement.  Rather, they are a frequency measurement.
+- Similary, the angle measurements related to mean were not included, as they are a measurement of the angle between two vectors, not a mean.
+Both of these are considered to be derivative calculations, not direct mean calculations, and as such were not included.
+
+In total, 66 mean and standard deviation features were included (see the Code Book section for further details on the included features).
+
+The activity label data in the raw data files only contains the numeric ID mapped to each activity.  For the sake of readability, the character names for each activity
+are used in the final data set.  This is based on the activity_labels.txt file included in the raw data zip.
+
+The requirement was to take the mean of each included feature for each subject and activity.  This results in 180 records in the final data set (30 subjects x 6 activities each).
+In addition to the 66 features, there is a column for the subject ID and one for the activity name, so there are 68 columns.  The dimensions of the final data set are then 180 x 68.
+
+----------------
+
+Code Book
+
+A list of all 561 features in the raw data files can be found in the features.txt file of the raw data zip.  Additionally, a description of the features and the data collection can be found
+in the features_info.txt file of the raw data zip.  Below is a list of the 66 mean and standard deviation features that were included as part of this project.  The list contains the 
+feature ID, the original feature name, and a cleaned-up feature name that is used in the final tidy data frame.  (Extraneous parenthesis and dashes were removed.)
+
+Please note that the data points taken from the phones were in the following units:
+acceleration - standard gravity unit (g)
+velocity - radians / second
+
+However, the feature data from the zip file that was used for this project had already been normalized, so the units no longer directly apply.
+
+ID	Original name			Formatted name in final data set
+1	tBodyAcc-mean()-X		tBodyAccMeanX
+2	tBodyAcc-mean()-Y		tBodyAccMeanY
+3	tBodyAcc-mean()-Z		tBodyAccMeanZ
+4	tBodyAcc-std()-X		tBodyAccStdX
+5	tBodyAcc-std()-Y		tBodyAccStdY
+6	tBodyAcc-std()-Z		tBodyAccStdZ
+41	tGravityAcc-mean()-X	tGravityAccMeanX
+42	tGravityAcc-mean()-Y	tGravityAccMeanY
+43	tGravityAcc-mean()-Z	tGravityAccMeanZ
+44	tGravityAcc-std()-X		tGravityAccStdX
+45	tGravityAcc-std()-Y		tGravityAccStdY
+46	tGravityAcc-std()-Z		tGravityAccStdZ
+81	tBodyAccJerk-mean()-X	tBodyAccJerkMeanX
+82	tBodyAccJerk-mean()-Y	tBodyAccJerkMeanY
+83	tBodyAccJerk-mean()-Z	tBodyAccJerkMeanZ
+84	tBodyAccJerk-std()-X	tBodyAccJerkStdX
+85	tBodyAccJerk-std()-Y	tBodyAccJerkStdY
+86	tBodyAccJerk-std()-Z	tBodyAccJerkStdZ
+121	tBodyGyro-mean()-X		tBodyGyroMeanX
+122	tBodyGyro-mean()-Y		tBodyGyroMeanY
+123	tBodyGyro-mean()-Z		tBodyGyroMeanZ
+124	tBodyGyro-std()-X		tBodyGyroStdX
+125	tBodyGyro-std()-Y		tBodyGyroStdY
+126	tBodyGyro-std()-Z		tBodyGyroStdZ
+161	tBodyGyroJerk-mean()-X	tBodyGyroJerkMeanX
+162	tBodyGyroJerk-mean()-Y	tBodyGyroJerkMeanY
+163	tBodyGyroJerk-mean()-Z	tBodyGyroJerkMeanZ
+164	tBodyGyroJerk-std()-X	tBodyGyroJerkStdX
+165	tBodyGyroJerk-std()-Y	tBodyGyroJerkStdY
+166	tBodyGyroJerk-std()-Z	tBodyGyroJerkStdZ
+201	tBodyAccMag-mean()		tBodyAccMagMean
+202	tBodyAccMag-std()		tBodyAccMagStd
+214	tGravityAccMag-mean()	tGravityAccMagMean
+215	tGravityAccMag-std()	tGravityAccMagStd
+227	tBodyAccJerkMag-mean()	tBodyAccJerkMagMean
+228	tBodyAccJerkMag-std()	tBodyAccJerkMagStd
+240	tBodyGyroMag-mean()		tBodyGyroMagMean
+241	tBodyGyroMag-std()		tBodyGyroMagStd
+253	tBodyGyroJerkMag-mean()	tBodyGyroJerkMagMean
+254	tBodyGyroJerkMag-std()	tBodyGyroJerkMagStd
+266	fBodyAcc-mean()-X		fBodyAccMeanX
+267	fBodyAcc-mean()-Y		fBodyAccMeanY
+268	fBodyAcc-mean()-Z		fBodyAccMeanZ
+269	fBodyAcc-std()-X		fBodyAccStdX
+270	fBodyAcc-std()-Y		fBodyAccStdY
+271	fBodyAcc-std()-Z		fBodyAccStdZ
+345	fBodyAccJerk-mean()-X	fBodyAccJerkMeanX
+346	fBodyAccJerk-mean()-Y	fBodyAccJerkMeanY
+347	fBodyAccJerk-mean()-Z	fBodyAccJerkMeanZ
+348	fBodyAccJerk-std()-X	fBodyAccJerkStdX
+349	fBodyAccJerk-std()-Y	fBodyAccJerkStdY
+350	fBodyAccJerk-std()-Z	fBodyAccJerkStdZ
+424	fBodyGyro-mean()-X		fBodyGyroMeanX
+425	fBodyGyro-mean()-Y		fBodyGyroMeanY
+426	fBodyGyro-mean()-Z		fBodyGyroMeanZ
+427	fBodyGyro-std()-X		fBodyGyroStdX
+428	fBodyGyro-std()-Y		fBodyGyroStdY
+429	fBodyGyro-std()-Z		fBodyGyroStdZ
+503	fBodyAccMag-mean()		fBodyAccMagMean
+504	fBodyAccMag-std()		fBodyAccMagStd
+516	fBodyBodyAccJerkMag-mean()	fBodyBodyAccJerkMagMean
+517	fBodyBodyAccJerkMag-std()	fBodyBodyAccJerkMagStd
+529	fBodyBodyGyroMag-mean()		fBodyBodyGyroMagMean
+530	fBodyBodyGyroMag-std()		fBodyBodyGyroMagStd
+542	fBodyBodyGyroJerkMag-mean()	fBodyBodyGyroJerkMagMean
+543	fBodyBodyGyroJerkMag-std()	fBodyBodyGyroJerkMagStd

@@ -1,0 +1,79 @@
+---
+title: "Analysis of MPG Based on Transmission Type"
+author: "Kate Prendergast"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Executive Summary
+
+In this report, we analyzed the effect of certain factors on MPG.  In particular, we 
+looked at the difference between manual and automatic transmissions, and we attempted to
+quantify this difference.  We used the mtcars dataset for this analysis.  We found that there
+was not a significant difference in MPG between manual and automatic transmissions when
+other factors were held constant.  Weight of the vehicle seemed to be a more important
+factor to focus on.
+
+Note that for the 'am' variable that designates the transmission type, 0 = automatic
+and 1 = manual.
+
+## Analysis
+
+First we load the data and take a look at the first few rows.  For our first piece of analysis,
+we fit a model that just analyzes the change in MPG against transmission type.  
+```{r}
+data("mtcars")
+head(mtcars, 3)
+fit1 <- lm(mpg ~ factor(am), data = mtcars)
+summary(fit1)$coef
+confint(fit1)
+```
+
+We see that there is a noticeable increase in estimated MPG (7.24) when the transmission type 
+is manual (1) over automatic.  Our 95% confidence interval for the difference
+(3.64 to 10.85) does not include
+0, so the difference seems significant.  However, intuition tells us that other factors have a 
+significant impact on MPG.  Two such factors are the weight of the car and the size of the 
+engine (wt and disp, respectively).
+We fit another model including these 2 variables so that we can see the change in MPG relative
+to transmission type while weight and engine size are held constant.
+
+```{r}
+fit2 <- lm(mpg ~ factor(am) + wt + disp, data = mtcars)
+summary(fit2)$coef
+confint(fit2)
+```
+
+Now we see that the increase in MPG for manual transmission is much smaller (0.178) when 
+weight and
+engine size are held constant.  In fact our 95% confidence interval for the difference
+(-2.86 to 3.22) includes
+0, so we cannot say for sure whether manual transmission has a significant effect on MPG.
+Weight seems to be a more significant driver of MPG.
+
+Next, we compare our two models to determine if the inclusion of weight and engine size
+creates a better model.
+
+```{r}
+anova(fit1, fit2)
+```
+
+Our p-value of 2.996e-07 indicates that there is a significant difference in including the
+two additional variables in our second model.
+
+Finally, we plot the density of the residuals of our second model. (See the appendix
+for the plot results.)
+Though it's not a perfect normal distribution, the residuals do seem to generally be
+normally distributed, and the deviations may be attributable to the small size of the data set.
+However, this does shed some level of doubt on our model.  Ideally, more data would be 
+collected and analyzed to draw a firmer conclusion.
+
+## Appendix
+
+```{r}
+plot(density(resid(fit2)), main = "Density of residuals of the fit2 model")
+```
+

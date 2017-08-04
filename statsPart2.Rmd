@@ -1,0 +1,84 @@
+---
+title: "Hypothesis Testing - Tooth Growth Sample Data"
+author: "Kate Prendergast"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+###Overview
+In this report, we will examine a fairly small dataset that shows tooth
+growth results from Vitamin C, using one of two delivery methods and given at three
+different doses.  We will examine whether the data appears to be normally distributed,
+and if so, determine if the differences in resutls appear to be statistically
+significant.
+
+###Data Summary
+We first load the ToothGrowth dataset and use the stat.desc() function to perform some initial
+analysis of the data.  
+```{r}
+library(datasets)
+library(pastecs)
+data("ToothGrowth")
+stat.desc(ToothGrowth, norm = TRUE)
+```
+
+Based on the Shapiro-Wilk normality test statistic p-value of 0.11 calculated for this dataset
+and an assumed significance level of 0.05, we will not reject the hypothesis that the data is 
+normally distributed and can proceed with confidence estimates using a t-distribution.
+
+###Testing
+We start by plotting the results by dose and delivery method.  Dose values are 0.5, 
+1, and 2.  Delivery methods are OJ and VC, which stand for Orange Juice and Ascorbic
+Acid, respectively.
+
+```{r}
+library(ggplot2)
+qplot(factor(dose), len, data = ToothGrowth, geom = "boxplot", facets = .~supp,
+      xlab = "Dose", ylab = "Tooth Growth Length", 
+      main = "Tooth Growth Length by Dose and Delivery Method")
+```
+
+
+There doesn't appear to be significant differences by delivery method, but the dose
+does seem to affect the length of tooth growth.  Let's further examine
+this using t-test confidence intervals.
+
+After subsetting the data by dose so that we can compare two at a time, we then compare the 0.5 to 1.0 doses, 1.0 to 2.0, and 0.5 to 2.0  We look at the confidence interval for each comparison, which
+will show with 95% confidence what the difference in the mean is between the two
+data sets involved.
+```{r}
+## subset the data by dose
+dose05 <- subset(ToothGrowth, dose == 0.5)
+dose1 <- subset(ToothGrowth, dose == 1.0)
+dose2 <- subset(ToothGrowth, dose == 2.0)
+## perform test for each combination, binding resutls together for formatting ease
+rbind(as.numeric(t.test(dose05$len, dose1$len)$conf.int),
+as.numeric(t.test(dose1$len, dose2$len)$conf.int),
+as.numeric(t.test(dose05$len, dose2$len)$conf.int))
+```
+
+In all 3 cases, since 0 is not in the interval, we can say with 95% confidence that the difference in the means is significant (non-zero) and that dose does affect
+the tooth growth results.
+
+Now we repeat this analysis comparing the two methods of delivery.
+
+```{r}
+## subset the data by delivery method
+oj <- subset(ToothGrowth, supp == "OJ")
+vc <- subset(ToothGrowth, supp == "VC")
+## perform test comparing the two methods
+as.numeric(t.test(oj$len, vc$len)$conf.int)
+```
+
+As suspected, the confidence interval does contain 0, so we cannot rule out the
+possibility that there is no difference in the means of the data for the two
+delivery methods.
+
+###Summary
+Based on our t-test confidence interval testing, there does seem to be a significant
+difference in results based on the dose but not based on the delivery method.  This is
+based on the 95% confidence intervals of our tests and the assumption of a 0.05
+significance level on the Shapiro-Wilk normality test.

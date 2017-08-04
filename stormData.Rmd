@@ -1,0 +1,104 @@
+---
+title: "Health and Economic Impact of Weather Events By Type"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Synopsis
+In this report, we will examine data from the National Oceanic and Atmospheric Administration (NOAA)
+on severe weather events.  The NOAA data tracks many data points for each severe weather event in the U.S.,
+including fatalities, injuries, and damage to property and crops.  Our aim is to determine which type of events
+are most harmful to population health and which have the greatest economic consequences.  From this analysis,
+we found that tornados and floods are the events that have the most impact on population health and economic factors.
+
+## Data Processing
+First, we read the data in from the csv file with the NOAA data.
+```{r cache=TRUE}
+stormData <- read.csv("StormData.csv.bz2")
+```
+
+```{r}
+dim(stormData)
+```
+
+We can see there are 902,297 observations of 37 variables.  Let's take a look at the first few rows.
+
+```{r}
+head(stormData)
+```
+
+## Results
+
+### Population Health Impact
+
+We first want to look at the impact on population health by event type.  For this analysis, we will combine both
+injuries and fatalities when looking at the effect on health.
+
+First, we will create a new column with the sum of fatalities and injuries.  Then we sum this field by event type
+and sort the results in descending order to see the event types with the most fatalities and injuries.
+
+```{r results='markup'}
+library(dplyr)
+stormData$PopHealth <- stormData$FATALITIES + stormData$INJURIES
+popHealthSums <- aggregate(PopHealth~EVTYPE, data = stormData, sum)
+popHealthSums <- arrange(popHealthSums, desc(PopHealth))
+```
+The bar chart below shows the top 5 events that are the most harmful to population health.
+
+```{r}
+barplot(head(popHealthSums, n=5)$PopHealth, names.arg = head(popHealthSums, n=5)$EVTYPE, cex.names = 0.7, xlab = "Event Type", ylab = "Total Fatalities and Injuries", main = "Event Type Impact on Population Health")
+```
+
+### Economic Impact
+
+To analyze the events with the greatest economic impact, we will look at the property damage and crop damage of
+each event.  This data is stored in 2 fields for each type of damage - a numeric amount and a character exponent.
+For example, $25,000 could be stored as a numeric value of 25 and an exponent of K.  According to the NOAA documentation,
+characters for exponent should either be K (thousands), M (millions), or B (billions).  Any other exponent values
+will be ignored, and such rows will not be included in the analysis, as it is not clear what they signify.  We will,
+however, include lowercase or uppercase values of these three exponents.
+
+We first create a new data set that only includes the event type and damage data in order to minimize the amount of data
+involved. We then add a new column to hold the total damage amount and assign it a value of zero for all rows.
+```{r}
+dmgData <- select(stormData, EVTYPE, PROPDMG, PROPDMGEXP, CROPDMG, CROPDMGEXP)
+dmgData$TotalDamage <- 0
+```
+
+Next we add the property and crop damage to the total damage field, multiplying each by the appropriate factor of 10
+based on the extension.
+```{r}
+## increase damage total by property damage * 1000 for K/k exponents
+dmgData$TotalDamage[dmgData$PROPDMGEXP %in% c("K", "k")] <- dmgData$TotalDamage[dmgData$PROPDMGEXP %in% c("K", "k")] + (dmgData$PROPDMG[dmgData$PROPDMGEXP %in% c("K", "k")] * 1000)
+## increase damage total by property damage * 1000000 for M/m exponents
+dmgData$TotalDamage[dmgData$PROPDMGEXP %in% c("M", "m")] <- dmgData$TotalDamage[dmgData$PROPDMGEXP %in% c("M", "m")] + (dmgData$PROPDMG[dmgData$PROPDMGEXP %in% c("M", "m")] * 1000000)
+## increase damage total by property damage * 1000000000 for B/b exponents
+dmgData$TotalDamage[dmgData$PROPDMGEXP %in% c("B", "b")] <- dmgData$TotalDamage[dmgData$PROPDMGEXP %in% c("B", "b")] + (dmgData$PROPDMG[dmgData$PROPDMGEXP %in% c("B", "b")] * 1000000000)
+
+## increase damage total by crop damage * 1000 for K/k exponents
+dmgData$TotalDamage[dmgData$CROPDMGEXP %in% c("K", "k")] <- dmgData$TotalDamage[dmgData$CROPDMGEXP %in% c("K", "k")] + (dmgData$CROPDMG[dmgData$CROPDMGEXP %in% c("K", "k")] * 1000)
+## increase damage total by crop damage * 1000000 for M/m exponents
+dmgData$TotalDamage[dmgData$CROPDMGEXP %in% c("M", "m")] <- dmgData$TotalDamage[dmgData$CROPDMGEXP %in% c("M", "m")] + (dmgData$CROPDMG[dmgData$CROPDMGEXP %in% c("M", "m")] * 1000000)
+## increase damage total by crop damage * 1000000000 for B/b exponents
+dmgData$TotalDamage[dmgData$CROPDMGEXP %in% c("B", "b")] <- dmgData$TotalDamage[dmgData$CROPDMGEXP %in% c("B", "b")] + (dmgData$CROPDMG[dmgData$CROPDMGEXP %in% c("B", "b")] * 1000000000)
+```
+
+Now we have the total damage for each row in the data set.  We will sum the damage by event type and again order the 
+results in descending order so that we can look at those events that have the highest economic impact.
+```{r}
+dmgEventSums <- aggregate(TotalDamage~EVTYPE, data = dmgData, sum)
+dmgEventSums <- arrange(dmgEventSums, desc(TotalDamage))
+```
+
+The bar chart below shows the top 5 events with the greatest economic impact.
+
+```{r}
+barplot(head(dmgEventSums, n=5)$TotalDamage, names.arg = head(dmgEventSums, n=5)$EVTYPE, cex.names = 0.7, xlab = "Event Type", ylab = "Total Damage in USD", main = "Event Type Economic Impact")
+```
+
+### Summary
+We can see that tornados have the biggest impact on population health and that flooding has the greatest economic
+impact.  Also, these are the only 2 events that occur in the top 5 of both categories.
